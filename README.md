@@ -1,6 +1,11 @@
 # ショッピングリストアプリのフロント側です。
 バック側のリポジトリはこちら。(https://github.com/TY58295-Uematsu/shopping-list-app-backend)
 
+## アプリ概要
+お店ごとに買うものリストを保存できます。追加・編集・削除機能あり
+![Image](https://github.com/user-attachments/assets/e909def8-a671-4ce8-8aa5-b722d655b2bb)
+![Image](https://github.com/user-attachments/assets/6abb2f9e-a726-487d-87d4-9957764ed568)
+
 ## Get started
 ### 開発環境で構築する場合、
 
