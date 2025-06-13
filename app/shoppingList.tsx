@@ -11,16 +11,19 @@ const ShoppingList = ({navigation, route}: ListScreenProps) => {
     const [isEdit, setIsEdit] = useState(false);
     const [editObj, setEditObj] = useState<{ id: number, item: string }>();
     const [itemList, setItemList] = useState<ShoppingItems[]>();
+    const [render, setRender] = useState(false)
 
     useEffect(() => {
         if (shopName) {
-            navigation.setOptions({ title: shopName });
+            navigation.setOptions({title: shopName});
         }
     }, [navigation, shopName]);
 
     useEffect(() => {
         if (allItems) {
-            const filterList = allItems.filter((item) => item.shopId.id === id).sort((a,b)=>a.id-b.id)
+            console.log("allItems",allItems)
+            // console.log("itemList",itemList)
+            const filterList = allItems.filter((item) => item.shopId.id === id).sort((a, b) => a.id - b.id)
             setItemList(filterList)
         }
     }, [id, allItems]);
@@ -29,7 +32,7 @@ const ShoppingList = ({navigation, route}: ListScreenProps) => {
     const handleSubmit = () => {
         if (isEdit) {
             try {
-                fetch(`http://localhost:8080/lists/items/${editObj?.id}`, {
+                fetch(`https://shopping-list-app-backend.onrender.com/lists/items/${editObj?.id}`, {
                     method: "PATCH",
                     headers: {
                         Accept: 'application/json',
@@ -39,25 +42,25 @@ const ShoppingList = ({navigation, route}: ListScreenProps) => {
                         item: itemText
                     })
                 }).then(res => {
-                    console.log(res)
-                    //itemListを更新
-                    if (itemList && editObj) {
-                        const changeItem = itemList.find(item => item.id === editObj.id);
-                        if (changeItem) {
-                            const updatedItemList = itemList.map(item =>
-                                item.id === editObj.id ? { ...item, item: itemText } : item
-                            );
-                            updatedItemList.sort((a, b) => a.id - b.id);
-                            setItemList(updatedItemList);
+                        console.log(res)
+                        //itemListを更新
+                        if (itemList && editObj) {
+                            const changeItem = itemList.find(item => item.id === editObj.id);
+                            if (changeItem) {
+                                const updatedItemList = itemList.map(item =>
+                                    item.id === editObj.id ? {...item, item: itemText} : item
+                                );
+                                updatedItemList.sort((a, b) => a.id - b.id);
+                                setItemList(updatedItemList);
 
-                        const updatedAllItems = allItems?.map(item =>
-                            item.id === editObj?.id ? { ...item, item: itemText } : item
-                        );
-                        onUpdateAllItems(updatedAllItems);
-                    }}}
+                                const updatedAllItems = allItems?.map(item =>
+                                    item.id === editObj?.id ? {...item, item: itemText} : item
+                                );
+                                onUpdateAllItems(updatedAllItems);
+                            }
+                        }
+                    }
                 )
-
-
             } catch {
                 console.error('error')
             }
@@ -66,7 +69,7 @@ const ShoppingList = ({navigation, route}: ListScreenProps) => {
             setEditObj(undefined)
         } else {
             try {
-                fetch('http://localhost:8080/lists/items', {
+                fetch('https://shopping-list-app-backend.onrender.com/lists/items', {
                     method: "POST",
                     headers: {
                         Accept: 'application/json',
@@ -78,7 +81,22 @@ const ShoppingList = ({navigation, route}: ListScreenProps) => {
                         shopId: id,
                         userId: 1
                     })
-                }).then(res => console.log(res))
+                }).then(res => {
+                    console.log(res)
+                })
+                    .then(() =>
+                        fetch(`https://shopping-list-app-backend.onrender.com/lists/all/1`))
+                    .then(res => res.json())
+                    .then((data: ShoppingItems[]) => {
+                        // onUpdateAllItems(data)
+                        const sortedData= data.sort((a,b)=>a.id-b.id)
+                        if(itemList && allItems){
+                        console.log(sortedData)
+                        setItemList([...itemList, sortedData[sortedData.length-1]]);
+                        onUpdateAllItems([...allItems, sortedData[sortedData.length-1]] );
+                            setRender(!render)
+                        }
+                    });
             } catch {
                 console.error('error')
             }
@@ -91,7 +109,7 @@ const ShoppingList = ({navigation, route}: ListScreenProps) => {
         onChangeItemText(item);
     }
     const handleDelete = (id: number) => {
-        fetch(`http://localhost:8080/lists/items/${id}`, {
+        fetch(`https://shopping-list-app-backend.onrender.com/lists/items/${id}`, {
             method: "DELETE"
         }).then(res => {
             console.log('delete')
@@ -109,9 +127,9 @@ const ShoppingList = ({navigation, route}: ListScreenProps) => {
                     <TouchableOpacity
                         style={styles.button}
                         onPress={() => {
-                        handleEdit(item.id, item.item)
-                    }}>
-                        <Icon name="edit" color="4f4444"> </Icon>
+                            handleEdit(item.id, item.item)
+                        }}>
+                        <Icon name="edit" color="#4f4444"> </Icon>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
                         handleDelete(item.id)
@@ -123,7 +141,7 @@ const ShoppingList = ({navigation, route}: ListScreenProps) => {
         )
     }
     return (
-        <SafeAreaView style={{ flex: 1 ,alignItems:"center"}}>
+        <SafeAreaView style={{flex: 1, alignItems: "center"}}>
             <View style={styles.itemList}>
                 <FlatList data={itemList} renderItem={renderItem}/>
             </View>
@@ -155,7 +173,7 @@ const styles = StyleSheet.create({
         padding: 10,
         borderColor: "#87cefa",
         borderRadius: 6,
-        width: "90%"
+        width: "80%"
     },
     container: {
         flex: 1,
@@ -163,7 +181,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         margin: 10,
-        width:"90%"
+        width: "90%"
     },
     items: {
         flexDirection: "row",
@@ -175,17 +193,17 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         width: "90%",
         marginLeft: 20,
-        shadowOffset: { width: 1, height: 1 },
+        shadowOffset: {width: 1, height: 1},
         shadowOpacity: 2,
         shadowColor: "#333",
     },
     itemText: {
         maxWidth: "80%",
-        marginLeft:20
+        marginLeft: 20
     },
     buttonContainer: {
         flexDirection: "row",
-        marginRight:10,
+        marginRight: 10,
     },
     shopView: {
         // flex:1,
@@ -209,7 +227,7 @@ const styles = StyleSheet.create({
         marginTop: 20
 
     },
-    button:{
-        marginRight:15
+    button: {
+        marginRight: 15
     }
 });

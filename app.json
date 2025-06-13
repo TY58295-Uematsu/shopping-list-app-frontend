@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "frontend",
+    "name": "wentzお買い物リスト",
     "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -29,9 +29,9 @@
         "expo-splash-screen",
         {
           "backgroundColor": "#232323",
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/adaptive-icon.png",
           "dark": {
-            "image": "./assets/images/splash-icon-dark.png",
+            "image": "./assets/images/adaptive-icon-dark.png",
             "backgroundColor": "#000000"
           },
           "imageWidth": 200
@@ -40,6 +40,18 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "b0c9ff70-f9fd-4fec-832b-373e4eadfb00"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b0c9ff70-f9fd-4fec-832b-373e4eadfb00"
     }
   }
 }

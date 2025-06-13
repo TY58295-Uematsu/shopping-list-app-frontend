@@ -10,7 +10,7 @@ export default function Index({navigation}: IndexScreenProps) {
     const [allItems, setAllItems] = useState<ShoppingItems[]>()
 
     useEffect(() => {
-        fetch('http://localhost:8080/users/1')
+        fetch('https://shopping-list-app-backend.onrender.com/users/1')
             .then(res => res.json())
             .then(data => {
                 console.log(data)
@@ -21,7 +21,7 @@ export default function Index({navigation}: IndexScreenProps) {
     useEffect(() => {
         if (user?.id) {
             console.log(user.id)
-            fetch(`http://localhost:8080/lists/all/${user.id}`)
+            fetch(`https://shopping-list-app-backend.onrender.com/lists/all/${user.id}`)
                 .then(res => res.json())
                 .then((data: ShoppingItems[]) => {
                     setAllItems(data)
@@ -54,14 +54,14 @@ export default function Index({navigation}: IndexScreenProps) {
         <SafeAreaView style={{ flex: 1 ,alignItems:"center"}}>
             <Text style={{paddingTop:50, height:100, }}>お店を選んでください。</Text>
             <View style={styles.shopView}>
-                <TouchableHighlight>
+                {/*<TouchableHighlight>*/}
                 <Text
                     style={{...styles.navArea, backgroundColor:"#ffffff"}}
                     onPress={()=>handleNavigation(shopArray[0].id,shopArray[0].shopName)}
                 >
                     {shopArray[0].shopName}
                 </Text>
-                </TouchableHighlight>
+                {/*</TouchableHighlight>*/}
                 <Text
                     style={{...styles.navArea, backgroundColor:"#ffffff"}}
                     onPress={()=>handleNavigation(shopArray[1].id,shopArray[1].shopName)}
